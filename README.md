@@ -1,1 +1,2 @@
-# A simple blog made on a simple MERN stack
+# React - Blog
+A simple blog made on a simple MERN stack
