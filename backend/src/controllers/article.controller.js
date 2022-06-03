@@ -1,7 +1,7 @@
-import { dbConnect } from "../../services/db.service";
-import { getSlug } from "../../utils/helpers";
+import { dbConnect } from "../services/db.service";
+import { getSlug } from "../utils/helpers";
 
-export const articleApi = {
+export const articleController = {
     // Quick check of API status
     status: (req, res) => res.json({ message: "API is running" }),
 
@@ -73,7 +73,7 @@ export const articleApi = {
             },
 
     // Updates name and/or content of an existing article
-    update:    async (req, res) => {
+    update: async (req, res) => {
                 try {
                     const slug = getSlug(req.body.title);
 

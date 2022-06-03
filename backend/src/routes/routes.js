@@ -1,14 +1,19 @@
 import express from "express";
-import { articleApi } from './api/article';
+import { articleController } from '../controllers/article.controller';
+import { voteController } from '../controllers/vote.controller';
 
 
 module.exports = function( app ) {
     app.use(express.json());
 
-    app.get( '/api', articleApi.status );
-    app.get( '/api/article/', articleApi.index );
-    app.get( '/api/article/:slug', articleApi.show );
-    app.post( '/api/article/', articleApi.create );
-    app.put( '/api/article/:slug', articleApi.update );
-    app.delete( '/api/article/:slug', articleApi.delete );
+    // Articles
+    app.get( '/api', articleController.status );
+    app.get( '/api/article/', articleController.index );
+    app.get( '/api/article/:slug', articleController.show );
+    app.post( '/api/article/', articleController.create );
+    app.put( '/api/article/:slug', articleController.update );
+    app.delete( '/api/article/:slug', articleController.delete );
+
+    // Upvotes
+    app.put( '/api/article/upvote/:slug', voteController.upvote );
 }
