@@ -1,15 +1,5 @@
-import { MongoClient } from "mongodb";
-import keys from "../../../config/keys";
-import { param } from "express/lib/request";
-import { getSlug } from "../../../helpers/helpers";
-import { query } from "express";
-
-// todo: remove db to its own location
-const mongoDB = keys.mongoURI;
-const dbConnect = async () => {
-    const client = await MongoClient.connect(mongoDB, { useNewUrlParser: true });
-    return client.db('my-blog');
-};
+import { dbConnect } from "../../services/db.service";
+import { getSlug } from "../../utils/helpers";
 
 export const articleApi = {
     // Quick check of API status
@@ -139,13 +129,3 @@ export const articleApi = {
                 }
             },
 };
-
-
-
-
-
-
-
-
-
-
