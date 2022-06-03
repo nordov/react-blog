@@ -7,7 +7,8 @@ module.exports = function( app ) {
 
     app.get( '/api', articleApi.status );
     app.get( '/api/article/', articleApi.index );
-    app.get('/api/article/:slug', articleApi.show);
-    app.post('/api/article/', articleApi.create);
-    app.delete('/api/article/:slug', articleApi.delete);
+    app.get( '/api/article/:slug', articleApi.show );
+    app.post( '/api/article/', articleApi.create );
+    app.put( '/api/article/:slug', articleApi.update );
+    app.delete( '/api/article/:slug', articleApi.delete );
 }

@@ -12,9 +12,10 @@ const dbConnect = async () => {
 };
 
 export const articleApi = {
+    // Quick check of API status
     status: (req, res) => res.json({ message: "API is running" }),
 
-
+    // List all articles in db
     index:  async (req, res) => {
                 try {
 
@@ -24,30 +25,30 @@ export const articleApi = {
 
                     articles.length > 0 ?
                         res.status(200).json(articles) :
-                        res.status(404).json({ message: "No articles found" });
+                        res.status(404).json({ error: "No articles found" });
 
                 } catch (error) {
-                    res.status(500).json({ message: "Error connecting to db", error });
+                    res.status(500).json({ error: "Error connecting to db" });
                 }
             },
 
-
+    // Finds article in db by the slug
     show:   async (req, res) => {
                 try {
                     const db = await dbConnect();
-                    const article = await db.collection('articles').find({ slug: req.params.slug }).toArray();
+                    const article = await db.collection('articles').findOne({ slug: req.params.slug });
                     db.s.client.close();
 
-                    article.length > 0 ?
+                    article ?
                         res.status(200).json(article) :
-                        res.status(404).json({ message: "No articles found" });
+                        res.status(404).json({ error: "No articles found" });
 
                 } catch (error) {
-                    res.status(500).json({ message: "Error connecting to db", error });
+                    res.status(500).json({ error: "Error connecting to db" });
                 }
             },
 
-
+    // Saves a new article to the db
     create: async (req, res) => {
                 try {
 
@@ -77,10 +78,46 @@ export const articleApi = {
                     res.status(201).json(article);
 
                 } catch (error) {
-                    res.status(500).json({ message: "Error saving to db", error });
+                    res.status(500).json({ error: "Error saving to db" });
                 }
             },
 
+    // Updates name and/or content of an existing article
+    update:    async (req, res) => {
+                try {
+                    const slug = getSlug(req.body.title);
+
+                    const db = await dbConnect();
+                    const result = await db.collection('articles')
+                                            .updateOne( 
+                                                { slug: req.params.slug },
+                                                { $set: { 
+                                                    'title': req.body.title, 
+                                                    'content': req.body.content,
+                                                    'slug': slug,
+                                                } },
+                                            );
+
+                    const article = await db.collection('articles').findOne({ slug: slug });
+                    db.s.client.close();
+
+                    if ( !result.modifiedCount ) {
+                        console.log("No changes");
+                        return res.status(500).json({ error: "No record was modified." });
+                    }
+
+                    if (!article) {
+                        return res.status(500).json({ error: "Unknown error happened." });
+                    }
+
+                    res.status(201).json(article);
+
+                } catch (error) {
+                    res.status(500).json({ error: "Error connecting to db" });
+                }
+            },
+
+    // Deletes from DB and existing article
     delete: async (req, res) => {
                 try {
                     const db = await dbConnect();
@@ -88,7 +125,7 @@ export const articleApi = {
 
 
                     if (!article.length) {
-                        return res.status(404).json({ message: "No articles found" });
+                        return res.status(404).json({ error: "No articles found" });
                     }
 
                     await db.collection('articles').deleteOne({ slug: req.params.slug });
@@ -98,7 +135,7 @@ export const articleApi = {
 
 
                 } catch (error) {
-                    res.status(500).json({ message: "Error connecting to db", error });
+                    res.status(500).json({ error: "Error connecting to db" });
                 }
             },
 };
