@@ -21,8 +21,8 @@ function App() {
       <Routes>
         <Route path="/" element={ <HomePage /> } />
         <Route path="/about" element={ <AboutPage /> } />
-        <Route path="/articles-list" element={ <ArticlesList /> } />
-        <Route path="/article/:name" element={ <ArticlePage /> } />
+        <Route path="/articles" element={ <ArticlesList /> } />
+        <Route path="/article/:slug" element={ <ArticlePage /> } />
         <Route path="*" element={ <NotFoundPage /> } />
       </Routes>
       </div>
